@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cuenta regresiva</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #000;
+      color: #fff;
+      font-family: 'Anton', Impact, sans-serif;
+    }
+    .countdown {
+      text-align: center;
+    }
+    .time {
+      font-size: 6rem;
+      font-weight: bold;
+      opacity: 1;
+      transition: opacity 5s ease;
+    }
+    .fade-out {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="countdown">
+    <div class="time" id="timer">00d 00h 00m 00s</div>
+  </div>
+
+  <script>
+    const target = new Date('2025-11-26T21:00:00-03:00');
+    const storageKey = 'countdown-start';
+    if (!localStorage.getItem(storageKey)) {
+      localStorage.setItem(storageKey, Date.now());
+    }
+
+    const timerEl = document.getElementById('timer');
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        timerEl.textContent = '0d 0h 0m 0s';
+        clearInterval(interval);
+        setTimeout(() => timerEl.classList.add('fade-out'), 1000);
+        setTimeout(() => timerEl.textContent = '', 6000);
+        localStorage.removeItem(storageKey);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
